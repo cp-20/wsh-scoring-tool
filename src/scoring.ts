@@ -63,18 +63,22 @@ export const measurePage = async (url: string, port: number) => {
     throw new Error("Lighthouse failed to run");
   }
 
-  const indexes = landingIndexesSchema.parse({
-    fcp: result.lhr.audits["first-contentful-paint"].score,
-    si: result.lhr.audits["speed-index"].score,
-    lcp: result.lhr.audits["largest-contentful-paint"].score,
-    tbt: result.lhr.audits["total-blocking-time"].score,
-    cls: result.lhr.audits["cumulative-layout-shift"].score,
-  });
+  try {
+    const indexes = landingIndexesSchema.parse({
+      fcp: result.lhr.audits["first-contentful-paint"].score,
+      si: result.lhr.audits["speed-index"].score,
+      lcp: result.lhr.audits["largest-contentful-paint"].score,
+      tbt: result.lhr.audits["total-blocking-time"].score,
+      cls: result.lhr.audits["cumulative-layout-shift"].score,
+    });
 
-  const score = indexes.fcp * 10 + indexes.si * 10 + indexes.lcp * 25 +
-    indexes.tbt * 30 + indexes.cls * 25;
+    const score = indexes.fcp * 10 + indexes.si * 10 + indexes.lcp * 25 +
+      indexes.tbt * 30 + indexes.cls * 25;
 
-  return { indexes, score };
+    return { indexes, score };
+  } catch (err) {
+    throw new Error(`Lighthouseの計測が失敗しました`);
+  }
 };
 
 type PageScoreResult = {
@@ -87,10 +91,12 @@ type PageScoreResult = {
   error: unknown;
 };
 
-type MeasureScenario = {
+export type MeasureScenario = {
+  name: string;
   type: "navigation";
   path: string;
 } | {
+  name: string;
   type: "user-flow";
   path: string;
   flow: (page: Page) => Promise<void>;
@@ -106,8 +112,8 @@ export const measure = async (
     : entrypoint;
 
   const chrome = await launch({
-    // chromeFlags: ["--headless", "--no-sandbox"],
-    chromeFlags: ["--no-sandbox"],
+    chromeFlags: ["--headless", "--no-sandbox"],
+    // chromeFlags: ["--no-sandbox"],
     chromePath: process.env.CHROME_PATH,
     userDataDir: false,
   });
@@ -163,7 +169,7 @@ export const measure = async (
 
 const userFlowIndexesSchema = z.object({
   tbt: z.number(),
-  intp: z.number(),
+  inp: z.number(),
 });
 
 const lhUserFlowFlags = {
@@ -194,12 +200,17 @@ export const measureUserFlow = async (
   await flow.endTimespan();
 
   const result = (await flow.createFlowResult()).steps[0];
-  const indexes = userFlowIndexesSchema.parse({
-    tbt: result.lhr.audits["total-blocking-time"].score,
-    intp: result.lhr.audits["interaction-to-next-paint"].score,
-  });
 
-  const score = indexes.tbt * 25 + indexes.intp * 25;
+  try {
+    const indexes = userFlowIndexesSchema.parse({
+      tbt: result.lhr.audits["total-blocking-time"].score,
+      inp: result.lhr.audits["interaction-to-next-paint"].score,
+    });
 
-  return { indexes, score };
+    const score = indexes.tbt * 25 + indexes.inp * 25;
+
+    return { indexes, score };
+  } catch (err) {
+    throw new Error(`Lighthouseの計測が失敗しました`);
+  }
 };

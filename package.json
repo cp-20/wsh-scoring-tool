@@ -2,7 +2,9 @@
   "name": "wsh-scoring-tool",
   "version": "0.0.0",
   "description": "",
-  "scripts": {},
+  "scripts": {
+    "start": "bun run src/main.ts"
+  },
   "author": "cp20",
   "type": "module",
   "license": "MIT",
