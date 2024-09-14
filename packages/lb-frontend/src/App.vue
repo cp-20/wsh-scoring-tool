@@ -1,47 +1,62 @@
 <script setup lang="ts">
-import HelloWorld from './components/HelloWorld.vue'
-import TheWelcome from './components/TheWelcome.vue'
+import RankingItemTop from '@/components/RankingItemTop.vue';
+import RankingItem from '@/components/RankingItem.vue';
 </script>
 
 <template>
   <header>
-    <img alt="Vue logo" class="logo" src="./assets/logo.svg" width="125" height="125" />
-
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
-    </div>
+    <h1>模擬 Web Speed Hackathon リーダーボード</h1>
   </header>
 
   <main>
-    <TheWelcome />
+    <div>
+      <div class="top-3-container">
+        <div v-for="i in [2, 1, 3]" :key="i">
+          <RankingItemTop :rank="i" name="cp-20" :score="542.85" url="https://webspeedhackathon2024-cp20.koyeb.app/" />
+        </div>
+      </div>
+      <div class="rest-container">
+        <div v-for="i in [4, 5, 6, 6, 7, 8, 9, 10]" :key="i">
+          <RankingItem :rank="i" name="cp-20" :score="542.85" url="https://webspeedhackathon2024-cp20.koyeb.app/" />
+        </div>
+      </div>
+    </div>
   </main>
+
+  <footer>
+    <p>模擬 Web Speed Hackathon リーダーボード</p>
+  </footer>
 </template>
 
 <style scoped>
-header {
-  line-height: 1.5;
+h1 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  text-align: center;
+  margin-bottom: 1rem;
 }
 
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
+.top-3-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.5rem;
+  margin-bottom: 1rem;
 }
 
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
+.rest-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
 
-  .logo {
-    margin: 0 2rem 0 0;
-  }
+footer {
+  margin-top: 2rem;
+  padding: 1rem;
+  border-top: 1px solid #ccc;
+}
 
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
+footer p {
+  text-align: center;
+  color: #777;
 }
 </style>
