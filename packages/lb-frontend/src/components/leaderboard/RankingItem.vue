@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import MdiExternalLink from '@/components/icons/MdiExternalLink.vue';
 import MdiGithub from '@/components/icons/MdiGithub.vue';
-import RingProgress from '@/components/RingProgress.vue';
+import RankDisplay from '@/components/leaderboard/RankDisplay.vue';
+import RingProgress from '@/components/ui/RingProgress.vue';
 import { getRingColor, maxScore } from '@/lib/ring-color';
 import { computed } from 'vue';
 
@@ -14,13 +15,21 @@ type Props = {
 };
 
 const props = defineProps<Props>();
+const isTop3 = computed(() => props.rank <= 3)
+const avatarSize = computed(() => isTop3.value ? 128 : 96)
+const scoreRingSize = computed(() => isTop3.value ? 96 : 64)
 const ringColor = computed(() => getRingColor(props.score));
 const progress = computed(() => props.score / maxScore * 100)
+const scoreStr = computed(() => props.score.toFixed(2))
 </script>
 
 <template>
   <div class="container" :class="{ disqualified: !!disqualified }">
-    <img class="avatar-display" :src="`https://github.com/${props.name}.png?size=96`" width="96" height="96" alt="">
+    <div class="avatar-container">
+      <img class="avatar-display" :src="`https://github.com/${props.name}.png?size=${avatarSize}`" :width="avatarSize"
+        :height="avatarSize" alt="">
+      <RankDisplay v-if="isTop3" :rank="props.rank" class="rank-display" />
+    </div>
     <div>
       <div class="label-container">
         <div class="rank" v-if="!props.disqualified">第{{ props.rank }}位</div>
@@ -31,13 +40,13 @@ const progress = computed(() => props.score / maxScore * 100)
         <a :href="props.url" target="_blank" rel="noopener noreferrer">
           <MdiExternalLink />
         </a>
-        <a :href="props.url" target="_blank" rel="noopener noreferrer">
+        <a :href="`https://github.com/${props.name}`" target="_blank" rel="noopener noreferrer">
           <MdiGithub />
         </a>
       </div>
     </div>
-    <RingProgress class="score-ring" :width="64" :height="64" :progress="progress" :color="ringColor"
-      :text="`${props.score}`" />
+    <RingProgress class="score-ring" :width="scoreRingSize" :height="scoreRingSize" :progress="progress"
+      :color="ringColor" :text="scoreStr" />
   </div>
 </template>
 
@@ -56,8 +65,18 @@ const progress = computed(() => props.score / maxScore * 100)
   color: #444;
 }
 
+.avatar-container {
+  position: relative;
+}
+
 .avatar-display {
   border-radius: 50%;
+}
+
+.rank-display {
+  position: absolute;
+  bottom: 0;
+  right: 0;
 }
 
 .label-container {

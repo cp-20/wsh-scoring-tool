@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import MdiExternalLink from '@/components/icons/MdiExternalLink.vue';
 import MdiGithub from '@/components/icons/MdiGithub.vue';
-import RingProgress from '@/components/RingProgress.vue';
+import RankDisplay from '@/components/leaderboard/RankDisplay.vue';
+import RingProgress from '@/components/ui/RingProgress.vue';
 import { getRingColor, maxScore } from '@/lib/ring-color';
 import { computed } from 'vue';
 
@@ -13,19 +14,14 @@ type Props = {
 };
 
 const props = defineProps<Props>();
-const rankColor = computed(() => {
-  if (props.rank === 1) return 'linear-gradient(220.55deg, #FFD439 0%, #FF7A00 100%)';
-  if (props.rank === 2) return 'linear-gradient(220.55deg, #EAEAEA 0%, #8B8B8B 100%)';
-  if (props.rank === 3) return 'linear-gradient(220.55deg, #FADD76 0%, #9F3311 100%)';
-  return 'gray';
-});
 const ringColor = computed(() => getRingColor(props.score));
 const progress = computed(() => props.score / maxScore * 100)
+const scoreStr = computed(() => props.score.toFixed(2))
 </script>
 
 <template>
   <div class="container">
-    <div class="rank-display">{{ props.rank }}</div>
+    <RankDisplay :rank="props.rank" />
     <img class="avatar-display" :src="`https://github.com/${props.name}.png?size=192`" width="192" height="192" alt="">
     <div class="label-container">
       <div class="rank">第{{ props.rank }}位</div>
@@ -35,12 +31,12 @@ const progress = computed(() => props.score / maxScore * 100)
       <a :href="props.url" target="_blank" rel="noopener noreferrer">
         <MdiExternalLink />
       </a>
-      <a :href="props.url" target="_blank" rel="noopener noreferrer">
+      <a :href="`https://github.com/${props.name}`" target="_blank" rel="noopener noreferrer">
         <MdiGithub />
       </a>
     </div>
     <RingProgress class="score-ring" :width="96" :height="96" :progress="progress" :color="ringColor"
-      :text="`${props.score}`" />
+      :text="scoreStr" />
   </div>
 </template>
 
@@ -54,19 +50,6 @@ const progress = computed(() => props.score / maxScore * 100)
   border-radius: 6px;
   gap: 1rem;
   padding: 1rem;
-}
-
-.rank-display {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  font-weight: 600;
-  display: grid;
-  place-items: center;
-  color: white;
-  font-size: 1.5rem;
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  background: v-bind(rankColor);
 }
 
 .avatar-display {
