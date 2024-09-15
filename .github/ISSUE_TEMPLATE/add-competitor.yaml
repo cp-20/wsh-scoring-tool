@@ -1,0 +1,45 @@
+name: 参加登録
+description: 模擬 Web Speed Hackathon の参加登録フォームです
+title: '[参加登録]'
+labels:
+  - registration
+body:
+  - type: markdown
+    attributes:
+      value: |
+        # ようこそ 模擬 Web Speed Hackathon へ！
+
+        - 開催期間 | **TBA**
+
+        **参加する前に、レギュレーションを確認してください**
+
+         - [レギュレーション](https://github.com/CyberAgentHack/web-speed-hackathon-2024/blob/main/docs/regulation.md)
+  - type: dropdown
+    id: regulation
+    attributes:
+      label: '注意事項・レギュレーション {{regulation}}'
+      options:
+        - 注意事項・レギュレーションを確認して、同意しました
+    validations:
+      required: true
+  - type: markdown
+    attributes:
+      value: |
+        ## 計測対象の URL
+
+        [課題のソースコード](https://github.com/CyberAgentHack/web-speed-hackathon-2024) から、アプリケーションをデプロイして、URL を提出してください
+  - type: input
+    id: target-url
+    attributes:
+      label: '計測対象の URL {{url}}'
+      placeholder: e.g.) https://web-speed-hackathon-2024.example.com/
+    validations:
+      required: true
+  - type: markdown
+    attributes:
+      value: |
+        ## 準備が整いました
+
+        投稿すると、GitHub Actions によって自動計測が始まります！
+
+        - :information_source: もし、1分以上何も反応がない場合は、issue を作り直してみてください

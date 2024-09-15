@@ -1,0 +1,20 @@
+name: scoring
+
+on:
+  issue_comment:
+    types: [created]
+
+jobs:
+  scoring:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+
+      - name: Install dependencies
+        run: bun install
+
+      - name: Run scoring
+        run: cd packages/scoring-runner && bun run start
+        env:
+          token: ${{ secrets.GITHUB_TOKEN }}

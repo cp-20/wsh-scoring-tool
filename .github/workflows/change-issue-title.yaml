@@ -1,0 +1,15 @@
+name: change-issue-title
+
+on:
+  issues:
+    types: [opened]
+
+jobs:
+  change-issue-title:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Change issue title
+        if: github.event.issue.title == '[参加登録]'
+        run: gh issue edit ${{ github.event.issue.number }} --title '[スコア] @{{ github.event.issue.author.login }}'
