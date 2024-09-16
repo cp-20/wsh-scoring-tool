@@ -1,13 +1,13 @@
 {
 	admin off
-	log {
-		output stderr
-		format console
-		level INFO
-	}
 }
 
 :80 {
+	log logger {
+		output stdout
+		level INFO
+	}
+
 	encode zstd gzip
 
 	handle_path /api/* {
