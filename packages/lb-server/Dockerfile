@@ -9,6 +9,7 @@ WORKDIR /app/packages/lb-server
 RUN cat <<EOF > start.sh
 #!/bin/bash
 set -e
+bunx prisma migrate deploy
 bunx prisma generate
 bunx prisma generate --sql
 bun run start
