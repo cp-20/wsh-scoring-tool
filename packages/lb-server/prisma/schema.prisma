@@ -16,7 +16,7 @@ datasource db {
 model User {
   id         String       @id @unique
   url        String
-  createdAt  DateTime     @default(now()) @map("created_at")
+  createdAt  DateTime     @default(now())
   Submission Submission[]
 
   @@index([url])
@@ -26,9 +26,9 @@ model User {
 model Submission {
   id        Int      @id @default(autoincrement())
   user      User     @relation(fields: [userId], references: [id])
-  userId    String   @map("user_id")
+  userId    String
   score     Int
-  createdAt DateTime @default(now()) @map("created_at")
+  createdAt DateTime @default(now())
 
   @@index([userId])
   @@index([score])
