@@ -1,28 +1,22 @@
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient } from "@prisma/client";
+import { getRanking as getRankingQuery } from "@prisma/client/sql";
 
 const prisma = new PrismaClient();
 
 export type GetRankingResult = {
   name: string;
+  url: string;
   score: number;
+  disqualified: boolean;
 }[];
 
 export const getRanking = async (): Promise<GetRankingResult> => {
-  const result = await prisma.submission.groupBy({
-    by: ['userId'],
-    _max: {
-      score: true
-    },
-    orderBy: {
-      _max: {
-        score: 'desc'
-      }
-    }
-  });
-
+  const result = await prisma.$queryRawTyped(getRankingQuery());
   return result.map((r) => ({
     name: r.userId,
-    score: r._max.score ?? 0
+    url: r.url,
+    disqualified: r.disqualified !== 0,
+    score: r.score ?? 0,
   }));
 };
 
@@ -32,27 +26,29 @@ export type GetTimelineResult = {
   createdAt: Date;
 }[];
 
-export const getTimeline = async (userIds: string[]): Promise<GetTimelineResult> => {
+export const getTimeline = async (
+  userIds: string[],
+): Promise<GetTimelineResult> => {
   const result = await prisma.submission.findMany({
     select: {
       userId: true,
       score: true,
-      createdAt: true
+      createdAt: true,
     },
     where: {
       userId: {
-        in: userIds
-      }
+        in: userIds,
+      },
     },
     orderBy: {
-      createdAt: 'asc'
-    }
+      createdAt: "asc",
+    },
   });
 
   return result.map((r) => ({
     name: r.userId,
     score: r.score,
-    createdAt: r.createdAt
+    createdAt: r.createdAt,
   }));
 };
 
@@ -65,8 +61,8 @@ export const createSubmission = async (submission: Submission) => {
   await prisma.submission.create({
     data: {
       userId: submission.name,
-      score: submission.score
-    }
+      score: submission.score,
+    },
   });
 };
 
@@ -79,28 +75,28 @@ export const createUser = async (payload: CreateUserPayload) => {
   await prisma.user.create({
     data: {
       id: payload.name,
-      url: payload.url
-    }
+      url: payload.url,
+    },
   });
 };
 
 export type GetUserResult =
   | {
-      id: string;
-      url: string;
-      createdAt: Date;
-    }
+    id: string;
+    url: string;
+    createdAt: Date;
+  }
   | undefined;
 
 export const getUser = async (userId: string): Promise<GetUserResult> => {
   const result = await prisma.user.findFirst({
     select: {
       url: true,
-      createdAt: true
+      createdAt: true,
     },
     where: {
-      id: userId
-    }
+      id: userId,
+    },
   });
 
   if (result === null) return undefined;
@@ -108,6 +104,6 @@ export const getUser = async (userId: string): Promise<GetUserResult> => {
   return {
     id: userId,
     url: result.url,
-    createdAt: result.createdAt
+    createdAt: result.createdAt,
   };
 };

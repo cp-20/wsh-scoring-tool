@@ -1,10 +1,12 @@
 {
   "name": "@wsh-scoring-tool/lb-server",
+  "main": "src/index.ts",
   "scripts": {
     "dev": "bun run --hot src/index.ts",
     "start": "bun run src/index.ts"
   },
   "dependencies": {
+    "@hono/zod-validator": "^0.2.2",
     "@prisma/client": "^5.19.1",
     "hono": "4.6.1",
     "prisma": "5.19.1",

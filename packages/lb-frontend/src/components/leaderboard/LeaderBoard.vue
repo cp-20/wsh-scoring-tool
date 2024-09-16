@@ -1,99 +1,26 @@
 <script setup lang="ts">
 import RankingItem from '@/components/leaderboard/RankingItem.vue';
 import RankingItemTop from '@/components/leaderboard/RankingItemTop.vue';
+import { getRanking } from '@/lib/gateway';
+import type { RankingItemType } from '@/lib/gateway';
+import { ref } from 'vue';
 
-type RankingItemType = {
-  rank: number;
-  name: string;
-  score: number;
-  url: string;
-  disqualified: boolean;
-};
-const ranking: RankingItemType[] = [
-  {
-    rank: 1,
-    name: 'cp-20',
-    score: 542.85,
-    url: 'https://webspeedhackathon2024-cp20.koyeb.app/',
-    disqualified: false
-  },
-  {
-    rank: 2,
-    name: 'cp-20',
-    score: 542.85,
-    url: 'https://webspeedhackathon2024-cp20.koyeb.app/',
-    disqualified: false
-  },
-  {
-    rank: 3,
-    name: 'cp-20',
-    score: 542.85,
-    url: 'https://webspeedhackathon2024-cp20.koyeb.app/',
-    disqualified: false
-  },
-  {
-    rank: 4,
-    name: 'cp-20',
-    score: 542.85,
-    url: 'https://webspeedhackathon2024-cp20.koyeb.app/',
-    disqualified: false
-  },
-  {
-    rank: 5,
-    name: 'cp-20',
-    score: 542.85,
-    url: 'https://webspeedhackathon2024-cp20.koyeb.app/',
-    disqualified: false
-  },
-  {
-    rank: 6,
-    name: 'cp-20',
-    score: 542.85,
-    url: 'https://webspeedhackathon2024-cp20.koyeb.app/',
-    disqualified: false
-  },
-  {
-    rank: 7,
-    name: 'cp-20',
-    score: 542.85,
-    url: 'https://webspeedhackathon2024-cp20.koyeb.app/',
-    disqualified: false
-  },
-  {
-    rank: 8,
-    name: 'cp-20',
-    score: 542.85,
-    url: 'https://webspeedhackathon2024-cp20.koyeb.app/',
-    disqualified: false
-  },
-  {
-    rank: 9,
-    name: 'cp-20',
-    score: 542.85,
-    url: 'https://webspeedhackathon2024-cp20.koyeb.app/',
-    disqualified: false
-  },
-  {
-    rank: 10,
-    name: 'cp-20',
-    score: 542.85,
-    url: 'https://webspeedhackathon2024-cp20.koyeb.app/',
-    disqualified: true
-  }
-];
+const ranking = ref<RankingItemType[]>([]);
+
+getRanking().then((data) => {
+  if (data === null) return;
+  ranking.value = data;
+});
+
 </script>
 
 <template>
   <div class="lb-container">
     <div class="top-3-container">
       <div v-for="i in [1, 0, 2]" :key="i">
-        <RankingItemTop
-          v-if="ranking.length > i"
-          :rank="ranking[i].rank"
-          :name="ranking[i].name"
-          :score="ranking[i].score"
-          :url="ranking[i].url"
-        />
+        <RankingItemTop v-if="ranking.length > i" :rank="ranking[i].rank" :name="ranking[i].name"
+          :score="ranking[i].score" :url="ranking[i].url" />
+        <div v-if="ranking.length <= i" />
       </div>
     </div>
     <div class="top-3-container-sp">
