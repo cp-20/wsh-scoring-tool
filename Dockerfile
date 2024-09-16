@@ -1,8 +1,9 @@
-FROM oven/bun:1-debian
+FROM oven/bun:1-debian AS base
 
 WORKDIR /app
 COPY . /app/
 RUN bun install
+RUN bun --filter "@wsh-scoring-tool/lb-frontend" build-only
 
 WORKDIR /app/packages/lb-server
 
@@ -12,7 +13,7 @@ set -e
 bunx prisma migrate deploy
 bunx prisma generate
 bunx prisma generate --sql
-bun run start
+PUBLIC_DIR=../lb-frontend/dist bun run start
 EOF
 
 RUN chmod +x start.sh

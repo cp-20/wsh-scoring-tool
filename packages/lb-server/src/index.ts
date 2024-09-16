@@ -1,4 +1,5 @@
 import { Hono } from 'hono';
+import { serveStatic } from 'hono/bun';
 import {
   createSubmission,
   createUser,
@@ -12,6 +13,11 @@ import { zValidator } from '@hono/zod-validator';
 const secretKey = process.env.SECRET_KEY;
 if (secretKey === undefined) {
   throw new Error('環境変数 SECRET_KEY が設定されていません');
+}
+
+const publicDir = process.env.PUBLIC_DIR;
+if (publicDir === undefined) {
+  throw new Error('環境変数 PUBLIC_DIR が設定されていません');
 }
 
 const headerKeyName = 'x-secret-key';
@@ -29,7 +35,7 @@ const createUserSchema = z.object({
 });
 
 const route = app
-  .get('/ranking', async (c) => {
+  .get('/api/ranking', async (c) => {
     try {
       const result = await getRanking();
       return c.json(result);
@@ -38,7 +44,7 @@ const route = app
       return c.json({ message: 'Internal server error' }, 500);
     }
   })
-  .get('/timeline', zValidator('query', z.object({ name: z.array(z.string()) })), async (c) => {
+  .get('/api/timeline', zValidator('query', z.object({ name: z.array(z.string()) })), async (c) => {
     const names = c.req.valid('query').name;
     if (names.length === 0) {
       return c.json({ message: 'userId is required' }, 400);
@@ -53,7 +59,7 @@ const route = app
     }
   })
   .post(
-    '/submissions',
+    '/api/submissions',
     zValidator('json', submissionSchema),
     zValidator('header', z.object({ [headerKeyName]: z.string() })),
     async (c) => {
@@ -73,7 +79,7 @@ const route = app
     }
   )
   .post(
-    '/users',
+    '/api/users',
     zValidator('json', createUserSchema),
     zValidator('header', z.object({ [headerKeyName]: z.string() })),
     async (c) => {
@@ -93,7 +99,7 @@ const route = app
       }
     }
   )
-  .get('/users/:id', zValidator('param', z.object({ id: z.string() })), async (c) => {
+  .get('/api/users/:id', zValidator('param', z.object({ id: z.string() })), async (c) => {
     const userId = c.req.valid('param').id;
 
     try {
@@ -107,6 +113,8 @@ const route = app
       return c.json({ message: 'Internal server error' }, 500);
     }
   });
+
+app.use(serveStatic({ root: publicDir }));
 
 export default {
   port: 3000,
