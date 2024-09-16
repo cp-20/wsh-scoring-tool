@@ -5,7 +5,8 @@
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["typedSql"]
 }
 
 datasource db {
@@ -20,7 +21,6 @@ model User {
   Submission Submission[]
 
   @@index([url])
-  @@map("users")
 }
 
 model Submission {
@@ -33,5 +33,4 @@ model Submission {
   @@index([userId])
   @@index([score])
   @@index([createdAt])
-  @@map("submissions")
 }
