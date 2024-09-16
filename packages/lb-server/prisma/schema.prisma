@@ -15,10 +15,11 @@ datasource db {
 }
 
 model User {
-  id         String       @id @unique
-  url        String
-  createdAt  DateTime     @default(now())
-  Submission Submission[]
+  id           String       @id @unique
+  url          String
+  disqualified Boolean      @default(false)
+  createdAt    DateTime     @default(now())
+  Submission   Submission[]
 
   @@index([url])
 }
