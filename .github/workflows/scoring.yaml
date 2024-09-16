@@ -13,6 +13,12 @@ jobs:
       - uses: actions/checkout@v4
       - uses: oven-sh/setup-bun@v2
 
+      - name: Install Chrome
+        uses: browser-actions/setup-chrome@v1
+
+      - name: Detect Chrome path
+        run: echo "CHROME_PATH=$(which google-chrome)" >> $GITHUB_ENV
+
       - name: Install dependencies
         run: bun install
 
@@ -22,3 +28,4 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           API_URI_BASE: ${{ vars.API_URI_BASE }}
           SECRET_KEY: ${{ secrets.SECRET_KEY }}
+          CHROME_PATH: ${{ env.CHROME_PATH }}
