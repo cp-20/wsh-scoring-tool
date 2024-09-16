@@ -109,6 +109,9 @@ const route = app
     },
   );
 
-export default app;
+export default {
+  port: 3000,
+  fetch: app.fetch,
+};
 
 export type AppType = typeof route;
