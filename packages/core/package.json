@@ -1,9 +1,7 @@
 {
   "name": "@wsh-scoring-tool/core",
   "private": true,
-  "scripts": {
-    "start": "bun run src/main.ts"
-  },
+  "main": "src/index.ts",
   "dependencies": {
     "chrome-launcher": "1.1.2",
     "lighthouse": "12.2.0",

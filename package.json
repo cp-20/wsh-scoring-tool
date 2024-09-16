@@ -4,8 +4,10 @@
   "description": "",
   "scripts": {
     "format": "prettier --write .",
-    "db:start": "docker run --name wsh-scoring-tool-database -e MYSQL_ROOT_PASSWORD=password -v wsh-scoring-tool-database:/var/lib/mysql -p 3306:3306 -d mariadb",
-    "db:login": "docker exec --it wsh-scoring-tool-database /bin/sh -c \"mariadb -u root -ppassword\""
+    "db:start": "docker run --rm --name wsh-scoring-tool-database -e MYSQL_ROOT_PASSWORD=password -v wsh-scoring-tool-database:/var/lib/mysql -p 3306:3306 -d mariadb",
+    "db:stop": "docker stop wsh-scoring-tool-database",
+    "db:login": "docker exec --it wsh-scoring-tool-database /bin/sh -c \"mariadb -u root -ppassword\"",
+    "migrate": "bunx prisma migrate dev --schema packages/lb-server/prisma/schema.prisma --name init"
   },
   "private": true,
   "author": "cp20",

@@ -71,3 +71,43 @@ export const createSubmission = async (submission: Submission) => {
     },
   });
 };
+
+export type CreateUserPayload = {
+  name: string;
+  url: string;
+};
+
+export const createUser = async (payload: CreateUserPayload) => {
+  await prisma.user.create({
+    data: {
+      id: payload.name,
+      url: payload.url,
+    },
+  });
+};
+
+export type GetUserResult = {
+  id: string;
+  url: string;
+  createdAt: Date;
+} | undefined;
+
+export const getUser = async (userId: string): Promise<GetUserResult> => {
+  const result = await prisma.user.findFirst({
+    select: {
+      url: true,
+      createdAt: true,
+    },
+    where: {
+      id: userId,
+    },
+  });
+
+  if (result === null) return undefined;
+
+  return {
+    id: userId,
+    url: result.url,
+    createdAt: result.createdAt,
+  };
+};
