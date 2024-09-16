@@ -1,5 +1,7 @@
 FROM oven/bun:1-debian AS builder
 
+WORKDIR /app
+COPY . /app/
 RUN bun install
 RUN bun --filter "@wsh-scoring-tool/lb-frontend" build
 
