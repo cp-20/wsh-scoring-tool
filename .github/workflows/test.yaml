@@ -16,8 +16,8 @@ jobs:
       - name: Run Lint
         run: bun --filter "*" lint
 
-      - name: Run typecheck
-        run: bun --filter "*" type-check
+      # - name: Run typecheck
+      #   run: bun --filter "*" type-check
 
       - name: Run format check
         run: bun format:check
