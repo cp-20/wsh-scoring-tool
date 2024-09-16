@@ -7,6 +7,14 @@ RUN bun install
 WORKDIR /app/packages/lb-server
 
 RUN bunx prisma generate
-RUN bunx prisma generate --sql
 
-CMD ["bun", "run", "start"]
+RUN cat <<EOF > start.sh
+#!/bin/bash
+set -e
+bunx prisma generate --sql
+bun run start
+EOF
+
+RUN chmod +x start.sh
+
+CMD ["./start.sh"]
