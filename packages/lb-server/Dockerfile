@@ -4,4 +4,5 @@ WORKDIR /app
 COPY . /app/
 RUN bun install
 
-CMD ["bun", "--filter '@wsh-scoring-tool/lb-server'", "start"]
+WORKDIR /app/packages/lb-server
+CMD ["bun", "run", "start"]
