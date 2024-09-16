@@ -11,15 +11,19 @@ getRanking().then((data) => {
   if (data === null) return;
   ranking.value = data;
 });
-
 </script>
 
 <template>
   <div class="lb-container">
     <div class="top-3-container">
       <div v-for="i in [1, 0, 2]" :key="i">
-        <RankingItemTop v-if="ranking.length > i" :rank="ranking[i].rank" :name="ranking[i].name"
-          :score="ranking[i].score" :url="ranking[i].url" />
+        <RankingItemTop
+          v-if="ranking.length > i"
+          :rank="ranking[i].rank"
+          :name="ranking[i].name"
+          :score="ranking[i].score"
+          :url="ranking[i].url"
+        />
         <div v-if="ranking.length <= i" />
       </div>
     </div>
