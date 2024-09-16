@@ -6,11 +6,10 @@ RUN bun install
 
 WORKDIR /app/packages/lb-server
 
-RUN bunx prisma generate
-
 RUN cat <<EOF > start.sh
 #!/bin/bash
 set -e
+bunx prisma generate
 bunx prisma generate --sql
 bun run start
 EOF
