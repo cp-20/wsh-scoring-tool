@@ -15,19 +15,24 @@ type Props = {
 };
 
 const props = defineProps<Props>();
-const isTop3 = computed(() => props.rank <= 3)
-const avatarSize = computed(() => isTop3.value ? 128 : 96)
-const scoreRingSize = computed(() => isTop3.value ? 96 : 64)
+const isTop3 = computed(() => props.rank <= 3);
+const avatarSize = computed(() => (isTop3.value ? 128 : 96));
+const scoreRingSize = computed(() => (isTop3.value ? 96 : 64));
 const ringColor = computed(() => getRingColor(props.score));
-const progress = computed(() => props.score / maxScore * 100)
-const scoreStr = computed(() => props.score.toFixed(2))
+const progress = computed(() => (props.score / maxScore) * 100);
+const scoreStr = computed(() => props.score.toFixed(2));
 </script>
 
 <template>
   <div class="container" :class="{ disqualified: !!disqualified }">
     <div class="avatar-container">
-      <img class="avatar-display" :src="`https://github.com/${props.name}.png?size=${avatarSize}`" :width="avatarSize"
-        :height="avatarSize" alt="">
+      <img
+        class="avatar-display"
+        :src="`https://github.com/${props.name}.png?size=${avatarSize}`"
+        :width="avatarSize"
+        :height="avatarSize"
+        alt=""
+      />
       <RankDisplay v-if="isTop3" :rank="props.rank" class="rank-display" />
     </div>
     <div>
@@ -45,8 +50,14 @@ const scoreStr = computed(() => props.score.toFixed(2))
         </a>
       </div>
     </div>
-    <RingProgress class="score-ring" :width="scoreRingSize" :height="scoreRingSize" :progress="progress"
-      :color="ringColor" :text="scoreStr" />
+    <RingProgress
+      class="score-ring"
+      :width="scoreRingSize"
+      :height="scoreRingSize"
+      :progress="progress"
+      :color="ringColor"
+      :text="scoreStr"
+    />
   </div>
 </template>
 
@@ -55,7 +66,9 @@ const scoreStr = computed(() => props.score.toFixed(2))
   display: flex;
   align-items: center;
   gap: 1rem;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, .1), 0 2px 4px -2px rgba(0, 0, 0, .1);
+  box-shadow:
+    0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -2px rgba(0, 0, 0, 0.1);
   border-radius: 6px;
   padding: 1rem;
 }

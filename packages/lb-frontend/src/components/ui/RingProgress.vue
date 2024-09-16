@@ -5,7 +5,7 @@ type Props = {
   progress: number;
   color: string;
   text: string;
-}
+};
 
 const props = defineProps<Props>();
 </script>

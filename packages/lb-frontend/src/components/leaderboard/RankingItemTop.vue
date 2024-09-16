@@ -15,14 +15,20 @@ type Props = {
 
 const props = defineProps<Props>();
 const ringColor = computed(() => getRingColor(props.score));
-const progress = computed(() => props.score / maxScore * 100)
-const scoreStr = computed(() => props.score.toFixed(2))
+const progress = computed(() => (props.score / maxScore) * 100);
+const scoreStr = computed(() => props.score.toFixed(2));
 </script>
 
 <template>
   <div class="container">
     <RankDisplay :rank="props.rank" />
-    <img class="avatar-display" :src="`https://github.com/${props.name}.png?size=192`" width="192" height="192" alt="">
+    <img
+      class="avatar-display"
+      :src="`https://github.com/${props.name}.png?size=192`"
+      width="192"
+      height="192"
+      alt=""
+    />
     <div class="label-container">
       <div class="rank">第{{ props.rank }}位</div>
       <div class="name">{{ props.name }}</div>
@@ -35,8 +41,14 @@ const scoreStr = computed(() => props.score.toFixed(2))
         <MdiGithub />
       </a>
     </div>
-    <RingProgress class="score-ring" :width="96" :height="96" :progress="progress" :color="ringColor"
-      :text="scoreStr" />
+    <RingProgress
+      class="score-ring"
+      :width="96"
+      :height="96"
+      :progress="progress"
+      :color="ringColor"
+      :text="scoreStr"
+    />
   </div>
 </template>
 
@@ -46,7 +58,9 @@ const scoreStr = computed(() => props.score.toFixed(2))
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, .1), 0 2px 4px -2px rgba(0, 0, 0, .1);
+  box-shadow:
+    0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -2px rgba(0, 0, 0, 0.1);
   border-radius: 6px;
   gap: 1rem;
   padding: 1rem;

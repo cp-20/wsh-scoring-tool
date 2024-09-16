@@ -1,35 +1,33 @@
-import { measure2024 } from "@wsh-scoring-tool/core";
-import { updateComment } from "../comment";
+import { measure2024 } from '@wsh-scoring-tool/core';
+import { updateComment } from '../comment';
 
 const testCases = [
-  "[App] ホームを開く",
-  "[App] 作者詳細を開く",
-  "[App] 作品詳細を開く",
-  "[App] エピソード詳細を開く",
-  "[App] 作品を検索する",
-  "[App] 漫画をスクロールして読む",
-  "[App] 利用規約を開く",
-  "[Admin] ログインする",
-  "[Admin] 作品の情報を編集する",
-  "[Admin] 作品に新しいエピソードを追加する",
+  '[App] ホームを開く',
+  '[App] 作者詳細を開く',
+  '[App] 作品詳細を開く',
+  '[App] エピソード詳細を開く',
+  '[App] 作品を検索する',
+  '[App] 漫画をスクロールして読む',
+  '[App] 利用規約を開く',
+  '[Admin] ログインする',
+  '[Admin] 作品の情報を編集する',
+  '[Admin] 作品に新しいエピソードを追加する'
 ];
 
-const template = (
-  scores: (number | null)[],
-  errors: { name: string; error: string }[],
-) => {
-  const scoreTable = testCases.map((t, i) => {
-    const score = scores[i] === null
-      ? "計測できません"
-      : scores[i] === undefined
-      ? "未計測"
-      : `${scores[i].toFixed(2)} / 100.00`;
-    return `| ${t} | ${score} |`;
-  }).join("\n");
+const template = (scores: (number | null)[], errors: { name: string; error: string }[]) => {
+  const scoreTable = testCases
+    .map((t, i) => {
+      const score =
+        scores[i] === null
+          ? '計測できません'
+          : scores[i] === undefined
+            ? '未計測'
+            : `${scores[i].toFixed(2)} / 100.00`;
+      return `| ${t} | ${score} |`;
+    })
+    .join('\n');
 
-  const errorList = errors
-    .map((e) => `- **${e.name}** | ${e.error}`)
-    .join("\n");
+  const errorList = errors.map((e) => `- **${e.name}** | ${e.error}`).join('\n');
 
   return `# 🚀 **模擬 Web Speed Hackathon へようこそ！**
 ### スコア
@@ -58,8 +56,6 @@ export const measure = async (entrypoint: string) => {
     }
     await updateComment(template(scores, errors));
   });
-  const score = result
-    .map((r) => r.success ? r.score : 0)
-    .reduce((acc, cur) => acc + cur, 0);
+  const score = result.map((r) => (r.success ? r.score : 0)).reduce((acc, cur) => acc + cur, 0);
   return score;
 };

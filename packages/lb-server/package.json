@@ -1,7 +1,8 @@
 {
   "name": "@wsh-scoring-tool/lb-server",
   "scripts": {
-    "dev": "bun run --hot src/index.ts"
+    "dev": "bun run --hot src/index.ts",
+    "start": "bun run src/index.ts"
   },
   "dependencies": {
     "@prisma/client": "^5.19.1",

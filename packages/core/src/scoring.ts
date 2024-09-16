@@ -1,13 +1,13 @@
-import lighthouse, { startFlow } from "lighthouse";
-import type { Config, Flags } from "lighthouse";
-import { launch } from "chrome-launcher";
-import { z } from "zod";
-import puppeteer from "puppeteer";
-import type { Page } from "puppeteer";
+import lighthouse, { startFlow } from 'lighthouse';
+import type { Config, Flags } from 'lighthouse';
+import { launch } from 'chrome-launcher';
+import { z } from 'zod';
+import puppeteer from 'puppeteer';
+import type { Page } from 'puppeteer';
 
 const chromePath = process.env.CHROME_PATH;
 if (chromePath === undefined) {
-  throw new Error("環境変数 CHROME_PATH が設定されていません");
+  throw new Error('環境変数 CHROME_PATH が設定されていません');
 }
 
 const landingIndexesSchema = z.object({
@@ -15,43 +15,43 @@ const landingIndexesSchema = z.object({
   si: z.number(),
   lcp: z.number(),
   tbt: z.number(),
-  cls: z.number(),
+  cls: z.number()
 });
 
 const lhCommonFlags = {
-  logLevel: "error",
-  output: "json",
-  onlyCategories: ["performance"],
+  logLevel: 'error',
+  output: 'json',
+  onlyCategories: ['performance'],
   screenEmulation: {
     mobile: false,
     width: 1920,
-    height: 1080,
-  },
+    height: 1080
+  }
 } satisfies Flags;
 
 const lhLandingFlags = {
   ...lhCommonFlags,
   onlyAudits: [
-    "first-contentful-paint",
-    "speed-index",
-    "largest-contentful-paint",
-    "total-blocking-time",
-    "cumulative-layout-shift",
-  ],
+    'first-contentful-paint',
+    'speed-index',
+    'largest-contentful-paint',
+    'total-blocking-time',
+    'cumulative-layout-shift'
+  ]
 } satisfies Flags;
 
 const lhConfig = {
-  extends: "lighthouse:default",
+  extends: 'lighthouse:default',
   settings: {
-    formFactor: "desktop",
-  },
+    formFactor: 'desktop'
+  }
 } satisfies Config;
 
 const getPage = async (port: number) => {
   const res = await fetch(`http://localhost:${port}/json/version`);
   const json = await res.json();
   const browser = await puppeteer.connect({
-    browserWSEndpoint: json.webSocketDebuggerUrl,
+    browserWSEndpoint: json.webSocketDebuggerUrl
   });
   const page = await browser.newPage();
   return page;
@@ -61,20 +61,20 @@ export const measurePage = async (url: string, port: number) => {
   const result = await lighthouse(url, { ...lhLandingFlags, port }, lhConfig);
 
   if (result === undefined) {
-    throw new Error("Lighthouse failed to run");
+    throw new Error('Lighthouse failed to run');
   }
 
   try {
     const indexes = landingIndexesSchema.parse({
-      fcp: result.lhr.audits["first-contentful-paint"].score,
-      si: result.lhr.audits["speed-index"].score,
-      lcp: result.lhr.audits["largest-contentful-paint"].score,
-      tbt: result.lhr.audits["total-blocking-time"].score,
-      cls: result.lhr.audits["cumulative-layout-shift"].score,
+      fcp: result.lhr.audits['first-contentful-paint'].score,
+      si: result.lhr.audits['speed-index'].score,
+      lcp: result.lhr.audits['largest-contentful-paint'].score,
+      tbt: result.lhr.audits['total-blocking-time'].score,
+      cls: result.lhr.audits['cumulative-layout-shift'].score
     });
 
-    const score = indexes.fcp * 10 + indexes.si * 10 + indexes.lcp * 25 +
-      indexes.tbt * 30 + indexes.cls * 25;
+    const score =
+      indexes.fcp * 10 + indexes.si * 10 + indexes.lcp * 25 + indexes.tbt * 30 + indexes.cls * 25;
 
     return { indexes, score };
   } catch (err) {
@@ -98,12 +98,12 @@ export type PageScoreResult = CommonResult & (SuccessResult | FailedResult);
 
 type NavigationScenario = {
   name: string;
-  type: "navigation";
+  type: 'navigation';
   path: string;
 };
 type UserFlowScenario = {
   name: string;
-  type: "user-flow";
+  type: 'user-flow';
   path: string;
   flow: (page: Page) => Promise<void>;
   setup?: (page: Page) => Promise<void>;
@@ -113,16 +113,14 @@ export type MeasureScenario = NavigationScenario | UserFlowScenario;
 export const measure = async (
   entrypoint: string,
   scenarios: MeasureScenario[],
-  callback: (result: PageScoreResult) => unknown,
+  callback: (result: PageScoreResult) => unknown
 ): Promise<PageScoreResult[]> => {
-  const normalizedEntrypoint = entrypoint.endsWith("/")
-    ? entrypoint.slice(0, -1)
-    : entrypoint;
+  const normalizedEntrypoint = entrypoint.endsWith('/') ? entrypoint.slice(0, -1) : entrypoint;
 
   const chrome = await launch({
-    chromeFlags: ["--headless", "--no-sandbox"],
+    chromeFlags: ['--headless', '--no-sandbox'],
     chromePath,
-    userDataDir: false,
+    userDataDir: false
   });
 
   console.log(`Chrome running on ${chrome.port}`);
@@ -133,30 +131,25 @@ export const measure = async (
     const name = scenario.name;
     const url = `${normalizedEntrypoint}${path}`;
     try {
-      if (scenario.type === "navigation") {
+      if (scenario.type === 'navigation') {
         const result = await measurePage(url, chrome.port);
         console.log(`Measured ${url}: ${JSON.stringify(result)}`);
         const pageResult: PageScoreResult = {
           path,
           name,
           success: true,
-          ...result,
+          ...result
         };
         results.push(pageResult);
         callback(pageResult);
-      } else if (scenario.type === "user-flow") {
-        const result = await measureUserFlow(
-          url,
-          chrome.port,
-          scenario.flow,
-          scenario.setup,
-        );
+      } else if (scenario.type === 'user-flow') {
+        const result = await measureUserFlow(url, chrome.port, scenario.flow, scenario.setup);
         console.log(`Measured ${path}: ${JSON.stringify(result)}`);
         const pageResult: PageScoreResult = {
           path,
           name,
           success: true,
-          ...result,
+          ...result
         };
         results.push(pageResult);
         callback(pageResult);
@@ -170,7 +163,7 @@ export const measure = async (
         path,
         name,
         success: false,
-        error: err as Error,
+        error: err as Error
       };
       results.push(pageResult);
       callback(pageResult);
@@ -180,33 +173,33 @@ export const measure = async (
   chrome.kill();
   chrome.process.kill();
 
-  console.log("All done!");
+  console.log('All done!');
 
   return results;
 };
 
 const userFlowIndexesSchema = z.object({
   tbt: z.number(),
-  inp: z.number(),
+  inp: z.number()
 });
 
 const lhUserFlowFlags = {
   ...lhCommonFlags,
-  onlyAudits: ["total-blocking-time", "interaction-to-next-paint"],
+  onlyAudits: ['total-blocking-time', 'interaction-to-next-paint']
 } satisfies Flags;
 
 export const measureUserFlow = async (
   url: string,
   port: number,
   flowFunc: (page: Page) => Promise<void>,
-  setupFunc?: (page: Page) => Promise<void>,
+  setupFunc?: (page: Page) => Promise<void>
 ) => {
   const page = await getPage(port);
   await page.goto(url);
 
   const flow = await startFlow(page, {
     config: lhConfig,
-    flags: lhUserFlowFlags,
+    flags: lhUserFlowFlags
   });
 
   await setupFunc?.(page);
@@ -218,8 +211,8 @@ export const measureUserFlow = async (
 
   try {
     const indexes = userFlowIndexesSchema.parse({
-      tbt: result.lhr.audits["total-blocking-time"].score,
-      inp: result.lhr.audits["interaction-to-next-paint"].score,
+      tbt: result.lhr.audits['total-blocking-time'].score,
+      inp: result.lhr.audits['interaction-to-next-paint'].score
     });
 
     const score = indexes.tbt * 25 + indexes.inp * 25;

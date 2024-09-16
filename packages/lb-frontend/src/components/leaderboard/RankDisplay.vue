@@ -4,8 +4,8 @@ import { computed } from 'vue';
 
 type Props = {
   rank: number;
-}
-const props = defineProps<Props>()
+};
+const props = defineProps<Props>();
 const rankColor = computed(() => getRankColor(props.rank));
 </script>
 

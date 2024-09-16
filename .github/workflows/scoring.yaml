@@ -17,6 +17,8 @@ jobs:
         run: bun install
 
       - name: Run scoring
-        run: cd packages/scoring-runner && bun run start
+        run: bun --filter "@wsh-scoring-tool/scoring-runner" start
         env:
           token: ${{ secrets.GITHUB_TOKEN }}
+          API_URI_BASE: ${{ vars.API_URI_BASE }}
+          SECRET_KEY: ${{ secrets.SECRET_KEY }}
