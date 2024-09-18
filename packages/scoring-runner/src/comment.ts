@@ -14,15 +14,14 @@ export const isRegister = async () => {
 
 export const isRetry = async () => {
   const comment = await getContextComment();
+  if (comment === undefined) return false;
   if (comment.user !== context.issue.owner) return false;
   if (comment.body.trim() !== "/retry") return false;
   return true;
 };
 
 export const getContextComment = async () => {
-  if (contextCommentId === undefined) {
-    throw new Error("contextCommentId is undefined");
-  }
+  if (contextCommentId === undefined) return undefined;
 
   const { data: comment } = await octokit.request(
     "GET /repos/{owner}/{repo}/issues/comments/{comment_id}",
