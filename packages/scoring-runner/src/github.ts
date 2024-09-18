@@ -83,22 +83,22 @@ let replyCommentId: number | null = null;
 
 export const updateComment = async (comment: string) => {
   if (replyCommentId === null) {
-    await octokit.request('POST /repos/{owner}/{repo}/issues/{issue_number}/comments', {
-      owner: context.issue.owner,
-      repo: context.issue.repo,
-      issue_number: context.issue.number,
-      body: comment
-    });
-  } else {
     const { data: postedComment } = await octokit.request(
-      'PATCH /repos/{owner}/{repo}/issues/comments/{comment_id}',
+      'POST /repos/{owner}/{repo}/issues/{issue_number}/comments',
       {
         owner: context.issue.owner,
         repo: context.issue.repo,
-        comment_id: replyCommentId,
+        issue_number: context.issue.number,
         body: comment
       }
     );
     replyCommentId = postedComment.id;
+  } else {
+    await octokit.request('PATCH /repos/{owner}/{repo}/issues/comments/{comment_id}', {
+      owner: context.issue.owner,
+      repo: context.issue.repo,
+      comment_id: replyCommentId,
+      body: comment
+    });
   }
 };

@@ -36,10 +36,11 @@ const template = (scores: (number | null)[], errors: { name: string; error: stri
 
   return `# 🚀 **模擬 Web Speed Hackathon へようこそ！**
 ### スコア
-------------------
+
 |テスト項目|スコア|
 |---------|------|
 ${scoreTable}
+
 **合計 ${totalScore} / 700.00**
 
 ### 計測できなかった原因
