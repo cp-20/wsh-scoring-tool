@@ -27,7 +27,7 @@ jobs:
       - if: github.event_name == 'issues'
         run: |
           gh api -X POST repos/${{ github.repository }}/issues/${{ github.event.issue.number }}/reactions \
-            -f content=+1
+            -f content=rocket
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - if: github.event_name == 'issue_comment'
