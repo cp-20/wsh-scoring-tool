@@ -57,28 +57,6 @@ export const getContextComment = async () => {
   };
 };
 
-export const replyReactionToIssue = async () => {
-  await octokit.request('POST /repos/{owner}/{repo}/issues/{issue_number}/reactions', {
-    owner: context.issue.owner,
-    repo: context.issue.repo,
-    issue_number: context.issue.number,
-    content: 'rocket'
-  });
-};
-
-export const replyReactionToComment = async () => {
-  if (contextCommentId === undefined) {
-    throw new Error('contextCommentId is undefined');
-  }
-
-  await octokit.request('POST /repos/{owner}/{repo}/comments/{comment_id}/reactions', {
-    owner: context.issue.owner,
-    repo: context.issue.repo,
-    comment_id: contextCommentId,
-    content: '+1'
-  });
-};
-
 let replyCommentId: number | null = null;
 
 export const updateComment = async (comment: string) => {
