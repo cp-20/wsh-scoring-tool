@@ -20,6 +20,25 @@ export const isRetry = async () => {
   return true;
 };
 
+export const getContextIssue = async () => {
+  const { data: issue } = await octokit.request(
+    "GET /repos/{owner}/{repo}/issues/{issue_number}",
+    {
+      owner: context.issue.owner,
+      repo: context.issue.repo,
+      issue_number: context.issue.number,
+    },
+  );
+  if (issue.body === undefined || issue.body === null) {
+    throw new Error("issue.body is undefined or null");
+  }
+
+  return {
+    body: issue.body,
+    user: issue.user?.login,
+  };
+};
+
 export const getContextComment = async () => {
   if (contextCommentId === undefined) return undefined;
 
