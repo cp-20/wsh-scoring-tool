@@ -1,5 +1,12 @@
 import { createUser, createUserSubmission, fetchUserUrl } from './gateway';
-import { getContextComment, getContextIssue, isRegister, isRetry, replyReaction } from './comment';
+import {
+  getContextComment,
+  getContextIssue,
+  isRegister,
+  isRetry,
+  replyReactionToComment,
+  replyReactionToIssue
+} from './comment';
 import { measure } from './scoring/2024';
 
 if (await isRegister()) {
@@ -9,12 +16,11 @@ if (await isRegister()) {
     throw new Error('name is undefined');
   }
   const url = issue.body.match(/計測対象の URL \{\{url\}\}\n\n([a-zA-Z0-9:\/-_.]+)/)?.[1];
-  console.log(issue.body, url);
   if (url === undefined) {
     throw new Error('url is undefined');
   }
   await createUser(name, url);
-  await replyReaction();
+  await replyReactionToIssue();
   const score = await measure(url);
   await createUserSubmission(name, score);
 }
@@ -32,7 +38,7 @@ if (await isRetry()) {
   if (url === undefined) {
     throw new Error('url is undefined');
   }
-  await replyReaction();
+  await replyReactionToComment();
   const score = await measure(url);
   await createUserSubmission(name, score);
 }

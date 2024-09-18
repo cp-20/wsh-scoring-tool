@@ -57,7 +57,16 @@ export const getContextComment = async () => {
   };
 };
 
-export const replyReaction = async () => {
+export const replyReactionToIssue = async () => {
+  await octokit.request('POST /repos/{owner}/{repo}/issues/{issue_number}/reactions', {
+    owner: context.issue.owner,
+    repo: context.issue.repo,
+    issue_number: context.issue.number,
+    content: 'rocket'
+  });
+};
+
+export const replyReactionToComment = async () => {
   if (contextCommentId === undefined) {
     throw new Error('contextCommentId is undefined');
   }
