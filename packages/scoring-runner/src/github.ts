@@ -79,7 +79,7 @@ export const replyReactionToComment = async () => {
   });
 };
 
-let replyCommentId = null;
+let replyCommentId: number | null = null;
 
 export const updateComment = async (comment: string) => {
   if (replyCommentId === null) {
@@ -90,11 +90,15 @@ export const updateComment = async (comment: string) => {
       body: comment
     });
   } else {
-    await octokit.request('PATCH /repos/{owner}/{repo}/issues/comments/{comment_id}', {
-      owner: context.issue.owner,
-      repo: context.issue.repo,
-      comment_id: replyCommentId,
-      body: comment
-    });
+    const { data: postedComment } = await octokit.request(
+      'PATCH /repos/{owner}/{repo}/issues/comments/{comment_id}',
+      {
+        owner: context.issue.owner,
+        repo: context.issue.repo,
+        comment_id: replyCommentId,
+        body: comment
+      }
+    );
+    replyCommentId = postedComment.id;
   }
 };
