@@ -34,6 +34,8 @@ const template = (scores: (number | null)[], errors: { name: string; error: stri
 
   const errorList = errors.map((e) => `- **${e.name}** | ${e.error}`).join('\n');
 
+  const finished = scores.every((s) => s !== undefined);
+
   return `# 🚀 **模擬 Web Speed Hackathon へようこそ！**
 ### スコア
 
@@ -44,9 +46,7 @@ ${scoreTable}
 **合計 ${totalScore} / 700.00**
 
 ### 計測できなかった原因
-${errorList}
-
-ℹ️ もう一度計測する場合は、 \`/retry\` とコメントしてください`;
+${errorList}${finished ? '\n\nℹ️ もう一度計測する場合は、 `/retry` とコメントしてください' : ''}`;
 };
 
 export const measure = async (entrypoint: string) => {
