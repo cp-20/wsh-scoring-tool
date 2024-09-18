@@ -1,4 +1,3 @@
-import { getInput } from "@actions/core";
 import { context, getOctokit } from "@actions/github";
 
 const token = process.env.GITHUB_TOKEN;
@@ -8,9 +7,6 @@ if (token === undefined) {
 const octokit = getOctokit(token);
 
 const contextCommentId = context.payload.comment?.id;
-if (contextCommentId === undefined) {
-  throw new Error("contextCommentId is undefined");
-}
 
 export const isRegister = async () => {
   return context.eventName === "issues" && context.payload.action === "opened";
@@ -24,6 +20,10 @@ export const isRetry = async () => {
 };
 
 export const getContextComment = async () => {
+  if (contextCommentId === undefined) {
+    throw new Error("contextCommentId is undefined");
+  }
+
   const { data: comment } = await octokit.request(
     "GET /repos/{owner}/{repo}/issues/comments/{comment_id}",
     {
@@ -43,6 +43,10 @@ export const getContextComment = async () => {
 };
 
 export const replyReaction = async () => {
+  if (contextCommentId === undefined) {
+    throw new Error("contextCommentId is undefined");
+  }
+
   await octokit.request(
     "POST /repos/{owner}/{repo}/comments/{comment_id}/reactions",
     {
