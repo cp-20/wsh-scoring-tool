@@ -8,7 +8,7 @@ if (await isRegister()) {
   if (name === undefined) {
     throw new Error('name is undefined');
   }
-  const url = issue.body.match(/### 計測対象の URL \{\{url\}\}\n\n([a-zA-Z:\/-_]+)$/)?.[1];
+  const url = issue.body.match(/計測対象の URL \{\{url\}\}\n\n([a-zA-Z0-9:\/-_.]+)/)?.[1];
   console.log(issue.body, url);
   if (url === undefined) {
     throw new Error('url is undefined');
