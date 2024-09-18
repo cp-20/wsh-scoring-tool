@@ -1,5 +1,5 @@
 import { measure2024 } from '@wsh-scoring-tool/core';
-import { updateComment } from '../comment';
+import { updateComment } from '../github';
 
 const testCases = [
   '[App] ホームを開く',

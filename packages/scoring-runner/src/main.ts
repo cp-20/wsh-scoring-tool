@@ -6,7 +6,7 @@ import {
   isRetry,
   replyReactionToComment,
   replyReactionToIssue
-} from './comment';
+} from './github';
 import { measure } from './scoring/2024';
 
 if (await isRegister()) {
