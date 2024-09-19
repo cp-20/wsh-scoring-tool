@@ -119,7 +119,7 @@ export const measure = async (
   const normalizedEntrypoint = entrypoint.endsWith('/') ? entrypoint.slice(0, -1) : entrypoint;
 
   const chrome = await launch({
-    chromeFlags: ['--headless', '--no-sandbox'],
+    chromeFlags: ['--headless', '--no-sandbox', '--disable-dev-shm-usage'],
     chromePath,
     userDataDir: false
   });
