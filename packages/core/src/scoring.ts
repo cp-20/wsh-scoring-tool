@@ -85,6 +85,7 @@ export const measurePage = async (url: string, port: number) => {
 type CommonResult = {
   path: string;
   name: string;
+  maxScore: number;
 };
 type SuccessResult = {
   success: true;
@@ -130,13 +131,14 @@ export const measure = async (
     const path = scenario.path;
     const name = scenario.name;
     const url = `${normalizedEntrypoint}${path}`;
+    const maxScore = scenario.type === 'navigation' ? 100 : 50;
+    const commonResult = { path, name, maxScore };
     try {
       if (scenario.type === 'navigation') {
         const result = await measurePage(url, chrome.port);
         console.log(`Measured ${url}: ${JSON.stringify(result)}`);
         const pageResult: PageScoreResult = {
-          path,
-          name,
+          ...commonResult,
           success: true,
           ...result
         };
@@ -146,8 +148,7 @@ export const measure = async (
         const result = await measureUserFlow(url, chrome.port, scenario.flow, scenario.setup);
         console.log(`Measured ${path}: ${JSON.stringify(result)}`);
         const pageResult: PageScoreResult = {
-          path,
-          name,
+          ...commonResult,
           success: true,
           ...result
         };
@@ -160,8 +161,7 @@ export const measure = async (
     } catch (err) {
       console.error(`Error measuring ${path}: ${err}`);
       const pageResult: PageScoreResult = {
-        path,
-        name,
+        ...commonResult,
         success: false,
         error: err as Error
       };
