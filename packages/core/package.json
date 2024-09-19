@@ -4,8 +4,8 @@
   "main": "src/index.ts",
   "dependencies": {
     "chrome-launcher": "1.1.2",
-    "lighthouse": "12.2.0",
-    "puppeteer": "23.3.0",
+    "lighthouse": "12.2.1",
+    "puppeteer": "23.4.0",
     "zod": "3.23.8"
   }
 }
