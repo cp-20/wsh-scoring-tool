@@ -11,18 +11,6 @@ const octokit = getOctokit(token);
 
 const contextCommentId = context.payload.comment?.id;
 
-export const isInCompetition = async () => {
-  const actionTime = await (async () => {
-    if (await isRegister()) return (await getContextIssue()).createdAt;
-    if (await isRetry()) return (await getContextComment())?.createdAt;
-    return undefined;
-  })();
-  if (actionTime === undefined) return false;
-  if (startDate && actionTime < new Date(startDate)) return false;
-  if (endDate && actionTime >= new Date(endDate)) return false;
-  return true;
-};
-
 export const isRegister = async () => {
   return context.eventName === 'issues' && context.payload.action === 'opened';
 };

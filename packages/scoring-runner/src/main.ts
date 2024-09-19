@@ -1,5 +1,5 @@
 import { createUser, createUserSubmission, fetchUserUrl } from './gateway';
-import { getContextComment, getContextIssue, isInCompetition, isRegister, isRetry } from './github';
+import { getContextComment, getContextIssue, isRegister, isRetry } from './github';
 import { measure2024 } from './scoring/2024';
 
 if (await isRegister()) {
@@ -14,9 +14,7 @@ if (await isRegister()) {
   }
   await createUser(name, url);
   const score = await measure2024(url);
-  if (await isInCompetition()) {
-    await createUserSubmission(name, score);
-  }
+  await createUserSubmission(name, score);
 }
 
 if (await isRetry()) {
@@ -33,7 +31,5 @@ if (await isRetry()) {
     throw new Error('url is undefined');
   }
   const score = await measure2024(url);
-  if (await isInCompetition()) {
-    await createUserSubmission(name, score);
-  }
+  await createUserSubmission(name, score);
 }

@@ -24,6 +24,13 @@ const headerKeyName = 'x-secret-key';
 
 const app = new Hono();
 
+const rankingQuerySchema = z
+  .object({
+    before: z.coerce.date(),
+    after: z.coerce.date()
+  })
+  .partial();
+
 const submissionSchema = z.object({
   name: z.string(),
   score: z.number()
@@ -35,9 +42,10 @@ const createUserSchema = z.object({
 });
 
 const route = app
-  .get('/api/ranking', async (c) => {
+  .get('/api/ranking', zValidator('query', rankingQuerySchema), async (c) => {
+    const query = c.req.valid('query');
     try {
-      const result = await getRanking();
+      const result = await getRanking(query);
       return c.json(result);
     } catch (err) {
       console.error(err);

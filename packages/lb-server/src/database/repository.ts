@@ -3,6 +3,11 @@ import { getRanking as getRankingQuery } from '@prisma/client/sql';
 
 const prisma = new PrismaClient();
 
+export type GetRankingQuery = Partial<{
+  after: Date;
+  before: Date;
+}>;
+
 export type GetRankingResult = {
   name: string;
   url: string;
@@ -10,8 +15,10 @@ export type GetRankingResult = {
   disqualified: boolean;
 }[];
 
-export const getRanking = async (): Promise<GetRankingResult> => {
-  const result = await prisma.$queryRawTyped(getRankingQuery());
+export const getRanking = async (query: GetRankingQuery): Promise<GetRankingResult> => {
+  const result = await prisma.$queryRawTyped(
+    getRankingQuery(query.after ?? new Date(0), query.before ?? new Date())
+  );
   return result.map((r) => ({
     name: r.userId,
     url: r.url,

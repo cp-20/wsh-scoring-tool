@@ -12,7 +12,9 @@ export type RankingItemType = {
 };
 
 export const getRanking = async () => {
-  const res = await client.ranking.$get();
+  const res = await client.api.ranking.$get({
+    query: { after: '2024-09-21T10:00:00+09:00', before: '2024-09-22T17:30:00+09:00' }
+  });
   if (res.status !== 200) {
     console.error('Failed to fetch ranking', res.status, res.statusText);
     return null;
