@@ -227,10 +227,14 @@ export const generateScenarios = (entrypoint: string): MeasureScenario[] => [
       await initialize(entrypoint);
       try {
         if (new URL(page.url()).pathname === `/admin`) {
+          const normalizedEntrypoint = entrypoint.endsWith('/')
+            ? entrypoint.slice(0, -1)
+            : entrypoint;
           await page.locator('input[name="email"]').fill('administrator@example.com');
           await page.locator('input[name="password"]').fill('pa5sW0rd!');
           await page.click('button[type="submit"]');
           await waitElementWithText(page, 'button', 'ログアウト');
+          await page.goto(`${normalizedEntrypoint}/admin/books`);
         }
       } catch (err) {
         throw new Error(`ログインに失敗しました`);
@@ -301,44 +305,25 @@ export const generateScenarios = (entrypoint: string): MeasureScenario[] => [
   {
     name: '[Admin] 作品に新しいエピソードを追加する',
     type: 'user-flow',
-    path: '/admin/books',
+    path: `/admin/books/${bookId}/episodes/new`,
     setup: async (page) => {
       await initialize(entrypoint);
       try {
         if (new URL(page.url()).pathname === `/admin`) {
+          const normalizedEntrypoint = entrypoint.endsWith('/')
+            ? entrypoint.slice(0, -1)
+            : entrypoint;
           await page.locator('input[name="email"]').fill('administrator@example.com');
           await page.locator('input[name="password"]').fill('pa5sW0rd!');
           await page.click('button[type="submit"]');
           await waitElementWithText(page, 'button', 'ログアウト');
+          await page.goto(`${normalizedEntrypoint}/admin/books/${bookId}/episodes/new`);
         }
       } catch (err) {
         throw new Error(`ログインに失敗しました`);
       }
     },
     flow: async (page) => {
-      try {
-        await page.locator('tbody button:first-of-type').click();
-      } catch (err) {
-        throw new Error(`作品が見つかりませんでした`);
-      }
-      try {
-        await page.waitForSelector('section[aria-label="作品詳細"]');
-      } catch (err) {
-        throw new Error(`作品の詳細が開けませんでした`);
-      }
-      try {
-        await page
-          .locator('section[role="dialog"] > div > div:nth-child(4) > a')
-          .filter((el) => el.textContent === 'エピソードを追加')
-          .click();
-      } catch (err) {
-        throw new Error(`エピソード追加ボタンが見つかりませんでした`);
-      }
-      try {
-        await page.waitForSelector('form[aria-label="エピソード情報"]');
-      } catch (err) {
-        throw new Error('エピソード追加タブが開けませんでした');
-      }
       try {
         await page.locator('input[name="name"]').fill('追加エピソード');
       } catch (err) {
@@ -374,8 +359,12 @@ export const generateScenarios = (entrypoint: string): MeasureScenario[] => [
         throw new Error(`エピソードが作成できませんでした`);
       }
       try {
-        await page.waitForResponse(
-          (res) => res.request().method() === 'POST' && res.url().endsWith('/api/v1/episodes')
+        await page.waitForFunction(
+          () =>
+            document
+              .querySelector('ul[aria-label="ページ一覧"]')
+              ?.computedStyleMap()
+              .get('cursor') !== 'not-allowed'
         );
       } catch (err) {
         throw new Error(`エピソードが作成されませんでした`);
