@@ -8,7 +8,7 @@ const waitElementWithText = (page: Page, selector: string, text: string, arbitra
     return page.waitForFunction(
       ({ selector, text }) =>
         [...document.querySelectorAll(selector)].some((el) => el.textContent?.includes(text)),
-      { timeout: 100000 },
+      {},
       { selector, text }
     );
   }
@@ -375,8 +375,7 @@ export const generateScenarios = (entrypoint: string): MeasureScenario[] => [
       }
       try {
         await page.waitForResponse(
-          (res) => res.request().method() === 'POST' && res.url().endsWith('/api/v1/episodes'),
-          { timeout: 100000 }
+          (res) => res.request().method() === 'POST' && res.url().endsWith('/api/v1/episodes')
         );
       } catch (err) {
         throw new Error(`エピソードが作成されませんでした`);

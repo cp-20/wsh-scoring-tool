@@ -202,6 +202,8 @@ export const measureUserFlow = async (
     flags: lhUserFlowFlags
   });
 
+  page.setDefaultNavigationTimeout(100 * 1000);
+  page.setDefaultTimeout(100 * 1000);
   await setupFunc?.(page);
   await flow.startTimespan();
   await flowFunc(page);
