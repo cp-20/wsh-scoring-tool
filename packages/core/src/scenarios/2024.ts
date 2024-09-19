@@ -375,7 +375,8 @@ export const generateScenarios = (entrypoint: string): MeasureScenario[] => [
       }
       try {
         await page.waitForResponse(
-          (res) => res.request().method() === 'POST' && res.url().endsWith('/api/v1/episodes')
+          (res) => res.request().method() === 'POST' && res.url().endsWith('/api/v1/episodes'),
+          { timeout: 100000 }
         );
       } catch (err) {
         throw new Error(`エピソードが作成されませんでした`);
