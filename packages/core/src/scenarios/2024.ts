@@ -179,6 +179,8 @@ export const generateScenarios = (entrypoint: string): MeasureScenario[] => [
         throw new Error(`「利用規約」ボタンが見つかりませんでした`);
       }
       try {
+        const dialog = await page.locator('section[role="dialog"]').wait();
+        console.log(dialog.innerHTML);
         await waitElementWithText(page, 'section[role="dialog"] p', '罪と罰', true);
       } catch (err) {
         throw new Error(`利用規約が表示されませんでした`);
@@ -190,11 +192,15 @@ export const generateScenarios = (entrypoint: string): MeasureScenario[] => [
     type: 'user-flow',
     path: '/admin',
     setup: async (page) => {
-      await initialize(entrypoint);
-      await page.deleteCookie({
-        name: 'userId',
-        domain: new URL(entrypoint).hostname
-      });
+      try {
+        await initialize(entrypoint);
+        await page.deleteCookie({
+          name: 'userId',
+          domain: new URL(entrypoint).hostname
+        });
+      } catch (err) {
+        throw new Error(`初期化に失敗しました`);
+      }
     },
     flow: async (page) => {
       try {
@@ -219,8 +225,22 @@ export const generateScenarios = (entrypoint: string): MeasureScenario[] => [
     name: '[Admin] 作品の情報を編集する',
     type: 'user-flow',
     path: '/admin/books',
-    setup: async () => {
-      await initialize(entrypoint);
+    setup: async (page) => {
+      try {
+        await initialize(entrypoint);
+      } catch (err) {
+        throw new Error(`初期化に失敗しました`);
+      }
+      try {
+        if (new URL(page.url()).pathname === `/admin`) {
+          await page.locator('input[name="email"]').fill('administrator@example.com');
+          await page.locator('input[name="password"]').fill('pa5sW0rd!');
+          await page.click('button[type="submit"]');
+          await waitElementWithText(page, 'button', 'ログアウト');
+        }
+      } catch (err) {
+        throw new Error(`ログインに失敗しました`);
+      }
     },
     flow: async (page) => {
       try {
@@ -288,8 +308,22 @@ export const generateScenarios = (entrypoint: string): MeasureScenario[] => [
     name: '[Admin] 作品に新しいエピソードを追加する',
     type: 'user-flow',
     path: '/admin/books',
-    setup: async () => {
-      await initialize(entrypoint);
+    setup: async (page) => {
+      try {
+        await initialize(entrypoint);
+      } catch (err) {
+        throw new Error(`初期化に失敗しました`);
+      }
+      try {
+        if (new URL(page.url()).pathname === `/admin`) {
+          await page.locator('input[name="email"]').fill('administrator@example.com');
+          await page.locator('input[name="password"]').fill('pa5sW0rd!');
+          await page.click('button[type="submit"]');
+          await waitElementWithText(page, 'button', 'ログアウト');
+        }
+      } catch (err) {
+        throw new Error(`ログインに失敗しました`);
+      }
     },
     flow: async (page) => {
       try {

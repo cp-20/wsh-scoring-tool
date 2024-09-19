@@ -78,7 +78,7 @@ export const measurePage = async (url: string, port: number) => {
 
     return { indexes, score };
   } catch (err) {
-    throw new Error(`Lighthouseの計測が失敗しました`);
+    throw new Error(`Lighthouseの計測が失敗しました: ${err}`);
   }
 };
 
@@ -119,7 +119,7 @@ export const measure = async (
   const normalizedEntrypoint = entrypoint.endsWith('/') ? entrypoint.slice(0, -1) : entrypoint;
 
   const chrome = await launch({
-    chromeFlags: ['--headless', '--no-sandbox'],
+    chromeFlags: ['--no-sandbox'],
     chromePath,
     userDataDir: false
   });
@@ -219,6 +219,6 @@ export const measureUserFlow = async (
 
     return { indexes, score };
   } catch (err) {
-    throw new Error(`Lighthouseの計測が失敗しました`);
+    throw new Error(`Lighthouseの計測が失敗しました: ${err}`);
   }
 };
