@@ -4,9 +4,24 @@ const token = process.env.GITHUB_TOKEN;
 if (token === undefined) {
   throw new Error('環境変数 GITHUB_TOKEN が設定されていません');
 }
+const startDate = process.env.START_DATETIME;
+const endDate = process.env.END_DATETIME;
+
 const octokit = getOctokit(token);
 
 const contextCommentId = context.payload.comment?.id;
+
+export const isInCompetition = async () => {
+  const actionTime = await (async () => {
+    if (await isRegister()) return (await getContextIssue()).createdAt;
+    if (await isRetry()) return (await getContextComment())?.createdAt;
+    return undefined;
+  })();
+  if (actionTime === undefined) return false;
+  if (startDate && actionTime < new Date(startDate)) return false;
+  if (endDate && actionTime >= new Date(endDate)) return false;
+  return true;
+};
 
 export const isRegister = async () => {
   return context.eventName === 'issues' && context.payload.action === 'opened';
@@ -32,7 +47,8 @@ export const getContextIssue = async () => {
 
   return {
     body: issue.body,
-    user: issue.user?.login
+    user: issue.user?.login,
+    createdAt: new Date(issue.created_at)
   };
 };
 
@@ -53,7 +69,8 @@ export const getContextComment = async () => {
 
   return {
     body: comment.body,
-    user: comment.user?.login
+    user: comment.user?.login,
+    createdAt: new Date(comment.created_at)
   };
 };
 
