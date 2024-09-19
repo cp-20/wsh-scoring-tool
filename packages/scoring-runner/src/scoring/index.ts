@@ -30,7 +30,7 @@ const template = (
 
   const errorList = errors.map((e) => `- **${e.name}** | ${e.error}`).join('\n');
 
-  const finished = scores.every((s) => s !== undefined);
+  const finished = scores.length === testCases.length;
 
   return `# 🚀 **模擬 Web Speed Hackathon へようこそ！**
 ### スコア
