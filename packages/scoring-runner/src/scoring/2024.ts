@@ -46,7 +46,9 @@ ${scoreTable}
 **合計 ${totalScore} / 700.00**
 
 ### 計測できなかった原因
-${errorList}${finished ? '\n\nℹ️ もう一度計測する場合は、 `/retry` とコメントしてください' : ''}`;
+${errorList}${
+    finished ? '\n\n---\n\nℹ️ もう一度計測する場合は、 `/retry` とコメントしてください' : ''
+  }`;
 };
 
 export const measure = async (entrypoint: string) => {
