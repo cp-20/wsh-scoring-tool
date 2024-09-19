@@ -191,8 +191,8 @@ export const generateScenarios = (entrypoint: string): MeasureScenario[] => [
     type: 'user-flow',
     path: '/admin',
     setup: async (page) => {
+      await initialize(entrypoint);
       try {
-        await initialize(entrypoint);
         await page.deleteCookie({
           name: 'userId',
           domain: new URL(entrypoint).hostname
@@ -225,11 +225,7 @@ export const generateScenarios = (entrypoint: string): MeasureScenario[] => [
     type: 'user-flow',
     path: '/admin/books',
     setup: async (page) => {
-      try {
-        await initialize(entrypoint);
-      } catch (err) {
-        throw new Error(`初期化に失敗しました`);
-      }
+      await initialize(entrypoint);
       try {
         if (new URL(page.url()).pathname === `/admin`) {
           await page.locator('input[name="email"]').fill('administrator@example.com');
@@ -308,11 +304,7 @@ export const generateScenarios = (entrypoint: string): MeasureScenario[] => [
     type: 'user-flow',
     path: '/admin/books',
     setup: async (page) => {
-      try {
-        await initialize(entrypoint);
-      } catch (err) {
-        throw new Error(`初期化に失敗しました`);
-      }
+      await initialize(entrypoint);
       try {
         if (new URL(page.url()).pathname === `/admin`) {
           await page.locator('input[name="email"]').fill('administrator@example.com');
