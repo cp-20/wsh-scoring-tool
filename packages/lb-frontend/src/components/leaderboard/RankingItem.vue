@@ -18,9 +18,6 @@ const props = defineProps<Props>();
 const isTop3 = computed(() => props.rank <= 3);
 const avatarSize = computed(() => (isTop3.value ? 128 : 96));
 const scoreRingSize = computed(() => (isTop3.value ? 96 : 64));
-const ringColor = computed(() => getRingColor(props.score));
-const progress = computed(() => (props.score / maxScore) * 100);
-const scoreStr = computed(() => props.score.toFixed(2));
 </script>
 
 <template>
@@ -54,9 +51,9 @@ const scoreStr = computed(() => props.score.toFixed(2));
       class="score-ring"
       :width="scoreRingSize"
       :height="scoreRingSize"
-      :progress="progress"
-      :color="ringColor"
-      :text="scoreStr"
+      :progress="(props.score / maxScore) * 100"
+      :color="getRingColor(props.score)"
+      :text="props.score.toFixed(2)"
     />
   </div>
 </template>

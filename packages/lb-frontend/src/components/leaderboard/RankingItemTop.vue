@@ -4,7 +4,6 @@ import MdiGithub from '@/components/icons/MdiGithub.vue';
 import RankDisplay from '@/components/leaderboard/RankDisplay.vue';
 import RingProgress from '@/components/ui/RingProgress.vue';
 import { getRingColor, maxScore } from '@/lib/ring-color';
-import { computed } from 'vue';
 
 type Props = {
   rank: number;
@@ -14,9 +13,6 @@ type Props = {
 };
 
 const props = defineProps<Props>();
-const ringColor = computed(() => getRingColor(props.score));
-const progress = computed(() => (props.score / maxScore) * 100);
-const scoreStr = computed(() => props.score.toFixed(2));
 </script>
 
 <template>
@@ -45,9 +41,9 @@ const scoreStr = computed(() => props.score.toFixed(2));
       class="score-ring"
       :width="96"
       :height="96"
-      :progress="progress"
-      :color="ringColor"
-      :text="scoreStr"
+      :progress="(props.score / maxScore) * 100"
+      :color="getRingColor(props.score)"
+      :text="props.score.toFixed(2)"
     />
   </div>
 </template>
