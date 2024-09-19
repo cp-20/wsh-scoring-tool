@@ -8,7 +8,7 @@ const waitElementWithText = (page: Page, selector: string, text: string, arbitra
     return page.waitForFunction(
       ({ selector, text }) =>
         [...document.querySelectorAll(selector)].some((el) => el.textContent?.includes(text)),
-      {},
+      { timeout: 100000 },
       { selector, text }
     );
   }
