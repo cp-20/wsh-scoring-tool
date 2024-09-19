@@ -41,6 +41,8 @@ jobs:
 
       - name: Install Chrome
         uses: browser-actions/setup-chrome@v1
+        with:
+          chrome-version: 127
 
       - name: Detect Chrome path
         run: echo "CHROME_PATH=$(which google-chrome)" >> $GITHUB_ENV
