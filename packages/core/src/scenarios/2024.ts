@@ -181,7 +181,6 @@ export const generateScenarios = (entrypoint: string): MeasureScenario[] => [
       try {
         await waitElementWithText(page, 'section[role="dialog"] p', '罪と罰', true);
       } catch (err) {
-        console.log(await page.content());
         throw new Error(`利用規約が表示されませんでした`);
       }
     }
