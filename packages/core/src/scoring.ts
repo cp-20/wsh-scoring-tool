@@ -78,7 +78,7 @@ export const measurePage = async (url: string, port: number) => {
 
     return { indexes, score };
   } catch (err) {
-    throw new Error(`Lighthouseの計測が失敗しました: ${err}`);
+    throw new Error(`Lighthouseの計測が失敗しました`);
   }
 };
 
@@ -219,6 +219,8 @@ export const measureUserFlow = async (
 
     return { indexes, score };
   } catch (err) {
-    throw new Error(`Lighthouseの計測が失敗しました: ${err}`);
+    console.log(result.lhr.audits['total-blocking-time']);
+    console.log(result.lhr.audits['interaction-to-next-paint']);
+    throw new Error(`Lighthouseの計測が失敗しました`);
   }
 };

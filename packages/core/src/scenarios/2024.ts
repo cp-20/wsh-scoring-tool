@@ -179,10 +179,9 @@ export const generateScenarios = (entrypoint: string): MeasureScenario[] => [
         throw new Error(`「利用規約」ボタンが見つかりませんでした`);
       }
       try {
-        const dialog = await page.locator('section[role="dialog"]').wait();
-        console.log(dialog.innerHTML);
         await waitElementWithText(page, 'section[role="dialog"] p', '罪と罰', true);
       } catch (err) {
+        console.log(await page.content());
         throw new Error(`利用規約が表示されませんでした`);
       }
     }
