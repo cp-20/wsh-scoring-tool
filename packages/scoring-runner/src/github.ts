@@ -15,16 +15,16 @@ export const isRegister = async () => {
 
 export const isRetry = async () => {
   const comment = await getContextComment();
-  console.log('isRetry', comment, context.issue);
+  const issue = await getContextIssue();
   if (comment === undefined) return false;
-  if (comment.user !== context.issue.owner) return false;
+  if (comment.user !== issue.user) return false;
   if (comment.body.trim() !== '/retry') return false;
   return true;
 };
 
 export const getContextIssue = async () => {
   const { data: issue } = await octokit.request('GET /repos/{owner}/{repo}/issues/{issue_number}', {
-    owner: context.issue.owner,
+    owner: context.repo.owner,
     repo: context.issue.repo,
     issue_number: context.issue.number
   });
