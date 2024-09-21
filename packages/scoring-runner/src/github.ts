@@ -15,7 +15,7 @@ export const isRegister = async () => {
 
 export const isRetry = async () => {
   const comment = await getContextComment();
-  console.log('isRetry', comment, context);
+  console.log('isRetry', comment, context.issue);
   if (comment === undefined) return false;
   if (comment.user !== context.issue.owner) return false;
   if (comment.body.trim() !== '/retry') return false;
