@@ -4,8 +4,6 @@ const token = process.env.GITHUB_TOKEN;
 if (token === undefined) {
   throw new Error('環境変数 GITHUB_TOKEN が設定されていません');
 }
-const startDate = process.env.START_DATETIME;
-const endDate = process.env.END_DATETIME;
 
 const octokit = getOctokit(token);
 
