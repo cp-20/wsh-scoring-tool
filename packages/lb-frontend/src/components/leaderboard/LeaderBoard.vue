@@ -6,10 +6,12 @@ import type { RankingItemType } from '@/lib/gateway';
 import { ref } from 'vue';
 
 const ranking = ref<RankingItemType[]>([]);
+const disqualified = ref<RankingItemType[]>([]);
 
 getRanking().then((data) => {
   if (data === null) return;
-  ranking.value = data;
+  ranking.value = data.filter((i) => !i.disqualified);
+  disqualified.value = data.filter((i) => i.disqualified);
 });
 </script>
 
@@ -33,8 +35,14 @@ getRanking().then((data) => {
       </div>
     </div>
     <div class="rest-container">
-      <div v-for="(item, i) in ranking.slice(3)" :key="i">
-        <RankingItem :rank="item.rank" :name="item.name" :score="item.score" :url="item.url" />
+      <div v-for="(item, i) in ranking.slice(3).concat(disqualified)" :key="i">
+        <RankingItem
+          :rank="item.rank"
+          :name="item.name"
+          :score="item.score"
+          :url="item.url"
+          :disqualified="item.disqualified"
+        />
       </div>
     </div>
   </div>
