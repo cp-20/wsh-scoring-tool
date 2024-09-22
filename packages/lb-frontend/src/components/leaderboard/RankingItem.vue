@@ -15,7 +15,7 @@ type Props = {
 };
 
 const props = defineProps<Props>();
-const isTop3 = computed(() => props.rank <= 3);
+const isTop3 = computed(() => 1 <= props.rank && props.rank <= 3);
 const avatarSize = computed(() => (isTop3.value ? 128 : 96));
 const scoreRingSize = computed(() => (isTop3.value ? 96 : 64));
 </script>
