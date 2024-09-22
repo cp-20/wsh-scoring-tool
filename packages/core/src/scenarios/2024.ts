@@ -23,6 +23,7 @@ const waitElementWithText = (page: Page, selector: string, text: string, arbitra
 const initialize = async (entrypoint: string) => {
   try {
     await fetch(`${entrypoint}/api/v1/initialize`, { method: 'POST' });
+    await sleep(3000);
   } catch (err) {
     throw new Error(`初期化に失敗しました`);
   }
