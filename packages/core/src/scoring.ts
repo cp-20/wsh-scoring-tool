@@ -195,17 +195,17 @@ export const measureUserFlow = async (
   setupFunc?: (page: Page) => Promise<void>
 ) => {
   const page = await getPage(port);
+  page.setDefaultNavigationTimeout(100 * 1000);
+  page.setDefaultTimeout(100 * 1000);
+
   await page.goto(url);
-  await page.waitForNetworkIdle();
+  await setupFunc?.(page);
 
   const flow = await startFlow(page, {
     config: lhConfig,
     flags: lhUserFlowFlags
   });
 
-  page.setDefaultNavigationTimeout(100 * 1000);
-  page.setDefaultTimeout(100 * 1000);
-  await setupFunc?.(page);
   await flow.startTimespan();
   await flowFunc(page);
   await flow.endTimespan();
@@ -215,7 +215,7 @@ export const measureUserFlow = async (
   try {
     const indexes = userFlowIndexesSchema.parse({
       tbt: result.lhr.audits['total-blocking-time'].score,
-      inp: result.lhr.audits['interaction-to-next-paint'].score
+      inp: result.lhr.audits['experimental-interaction-to-next-paint'].score
     });
 
     const score = indexes.tbt * 25 + indexes.inp * 25;
@@ -223,7 +223,7 @@ export const measureUserFlow = async (
     return { indexes, score };
   } catch (err) {
     console.log(result.lhr.audits['total-blocking-time']);
-    console.log(result.lhr.audits['interaction-to-next-paint']);
+    console.log(result.lhr.audits['experimental-interaction-to-next-paint']);
     throw new Error(`Lighthouseの計測が失敗しました`);
   }
 };
