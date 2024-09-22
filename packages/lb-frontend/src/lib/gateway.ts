@@ -21,13 +21,10 @@ export const getRanking = async () => {
   }
   const body = await res.json();
 
-  const result: RankingItemType[] = body.map((item, i) => ({
-    rank: i + 1,
-    name: item.name,
-    score: item.score,
-    url: item.url,
-    disqualified: item.disqualified
-  }));
+  const result: RankingItemType[] = body
+    .filter((item) => !item.disqualified)
+    .map((item, i) => ({ ...item, rank: i + 1 }))
+    .concat(body.filter((item) => item.disqualified).map((item) => ({ ...item, rank: 0 })));
 
   return result;
 };
