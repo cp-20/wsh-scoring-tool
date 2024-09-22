@@ -17,7 +17,7 @@ export const isRetry = async () => {
   const comment = await getContextComment();
   const issue = await getContextIssue();
   if (comment === undefined) return false;
-  if (comment.user !== issue.user) return false;
+  if (comment.user !== issue.user && comment.user !== 'cp-20') return false;
   if (comment.body.trim() !== '/retry') return false;
   return true;
 };
