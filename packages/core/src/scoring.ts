@@ -196,6 +196,7 @@ export const measureUserFlow = async (
 ) => {
   const page = await getPage(port);
   await page.goto(url);
+  await page.waitForNetworkIdle();
 
   const flow = await startFlow(page, {
     config: lhConfig,
