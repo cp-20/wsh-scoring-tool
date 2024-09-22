@@ -235,6 +235,7 @@ export const generateScenarios = (entrypoint: string): MeasureScenario[] => [
           await page.click('button[type="submit"]');
           await waitElementWithText(page, 'button', 'ログアウト');
           await page.goto(`${normalizedEntrypoint}/admin/books`);
+          await page.waitForNetworkIdle();
         }
       } catch (err) {
         throw new Error(`ログインに失敗しました`);
@@ -318,6 +319,7 @@ export const generateScenarios = (entrypoint: string): MeasureScenario[] => [
           await page.click('button[type="submit"]');
           await waitElementWithText(page, 'button', 'ログアウト');
           await page.goto(`${normalizedEntrypoint}/admin/books/${bookId}/episodes/new`);
+          await page.waitForNetworkIdle();
         }
       } catch (err) {
         throw new Error(`ログインに失敗しました`);
