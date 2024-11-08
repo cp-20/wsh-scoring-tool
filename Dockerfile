@@ -10,9 +10,9 @@ WORKDIR /app/packages/lb-server
 RUN cat <<EOF > start.sh
 #!/bin/bash
 set -e
-bunx prisma migrate deploy
-bunx prisma generate
-bunx prisma generate --sql
+bun prisma migrate deploy
+bun prisma generate
+bun prisma generate --sql
 PUBLIC_DIR=../lb-frontend/dist bun run start
 EOF
 
