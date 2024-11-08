@@ -7,6 +7,7 @@ RUN bun --filter "@wsh-scoring-tool/lb-frontend" build-only
 
 WORKDIR /app/packages/lb-server
 
+ARG DATABASE_URL
 RUN bun prisma migrate deploy
 RUN bun prisma generate
 RUN bun prisma generate --sql
