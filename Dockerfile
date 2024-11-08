@@ -7,15 +7,10 @@ RUN bun --filter "@wsh-scoring-tool/lb-frontend" build-only
 
 WORKDIR /app/packages/lb-server
 
-RUN cat <<EOF > start.sh
-#!/bin/bash
-set -e
-bun prisma migrate deploy
-bun prisma generate
-bun prisma generate --sql
-PUBLIC_DIR=../lb-frontend/dist bun run start
-EOF
+RUN bun prisma migrate deploy
+RUN bun prisma generate
+RUN bun prisma generate --sql
 
-RUN chmod +x start.sh
+ENV PUBLIC_DIR=../lb-frontend/dist
 
-CMD ["./start.sh"]
+CMD ["bun", "run", "start"]
